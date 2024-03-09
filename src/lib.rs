@@ -1,10 +1,4 @@
-mod traits;
-mod wrappers;
+#[cfg(target_os = "linux")]
+mod linux;
 
-#[cfg(feature = "tokio")]
-pub mod tokio;
-
-pub use traits::*;
-pub use wrappers::*;
-
-pub const MAX_CHUNK_SIZE: usize = 0x7ffff0000;
+pub use linux::*;
