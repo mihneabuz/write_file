@@ -3,10 +3,17 @@ name = "write_file"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+default = ["tokio"]
+tokio = ["dep:tokio", "dep:pin-project-lite"]
 
 [dependencies]
 libc = "0.2"
+tokio = { path = "../tokio/tokio", version = "1.36", features = ["net", "fs"], optional = true }
+pin-project-lite = { version = "0.2", optional = true }
 
 [dev-dependencies]
+anyhow = "1"
 tempfile = "3"
+async-tempfile = "0.5"
+tokio = { path = "../tokio/tokio", version = "1.36", features = ["rt", "macros", "io-util"] }

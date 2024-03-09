@@ -1,6 +1,9 @@
 mod traits;
 mod wrappers;
 
+#[cfg(feature = "tokio")]
+pub mod tokio;
+
 pub use traits::*;
 pub use wrappers::*;
 

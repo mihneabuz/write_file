@@ -3,7 +3,7 @@ use std::{fs::File, io, os::fd::AsRawFd};
 use crate::MAX_CHUNK_SIZE;
 
 pub fn send_file(
-    file: &File,
+    file: &impl AsRawFd,
     stream: &impl AsRawFd,
     offset: usize,
     len: usize,
