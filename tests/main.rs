@@ -5,9 +5,9 @@ mod tests {
         net::{TcpListener, TcpStream},
     };
 
-    use write_file::SendFile;
+    use write_file::{SendFile, MAX_CHUNK_SIZE};
 
-    fn simple_std(content: &str) {
+    fn simple_std(content: &str, chunk_size: usize) {
         let listener = TcpListener::bind("0.0.0.0:0").unwrap();
         let port = listener.local_addr().unwrap().port();
 
@@ -25,7 +25,12 @@ mod tests {
         file.write_all(content.as_bytes()).unwrap();
 
         if let Ok((mut stream, _)) = listener.accept() {
-            stream.write_file(file).unwrap();
+            if chunk_size == 0 {
+                stream.write_file(&file).unwrap();
+            } else {
+                stream.write_file_chunked(&file, chunk_size).unwrap();
+            }
+
             stream.flush().unwrap();
         }
 
@@ -34,8 +39,18 @@ mod tests {
 
     #[test]
     fn simple_std_cases() {
-        simple_std("hello world!");
-        simple_std("hello world!".repeat(100).as_str());
-        simple_std("hello world!".repeat(10000).as_str());
+        let content = [
+            "hello world!".to_string(),
+            "hello world!".repeat(100),
+            "hello world!".repeat(10000),
+        ];
+
+        let chunk_sizez = [0, 10, 1000, MAX_CHUNK_SIZE];
+
+        for content in content {
+            for chunk_size in chunk_sizez {
+                simple_std(&content, chunk_size);
+            }
+        }
     }
 }
