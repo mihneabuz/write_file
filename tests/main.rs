@@ -26,9 +26,9 @@ mod tests {
 
         if let Ok((mut stream, _)) = listener.accept() {
             if chunk_size == 0 {
-                stream.write_file(&file).unwrap();
+                stream.write_file_all(&file).unwrap();
             } else {
-                stream.write_file_chunked(&file, chunk_size).unwrap();
+                stream.write_file_all_chunked(&file, chunk_size).unwrap();
             }
 
             stream.flush().unwrap();
