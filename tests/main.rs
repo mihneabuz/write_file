@@ -55,6 +55,7 @@ mod std {
     }
 }
 
+#[cfg(feature = "tokio")]
 #[cfg(test)]
 mod tokio {
     use std::path::Path;
@@ -67,16 +68,17 @@ mod tokio {
     use write_file::MAX_CHUNK_SIZE;
 
     async fn tempfile(content: &str, path: impl AsRef<Path>) {
-        File::options()
+        let mut file = File::options()
             .create(true)
             .truncate(true)
             .write(true)
             .open(path.as_ref())
             .await
-            .unwrap()
-            .write_all(content.as_bytes())
-            .await
             .unwrap();
+
+        file.write_all(content.as_bytes()).await.unwrap();
+
+        file.flush().await.unwrap();
     }
 
     async fn async_tokio(content: &str, chunk_size: usize) {
